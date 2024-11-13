@@ -1,79 +1,71 @@
-import React from 'react';
-import './Notifications.css';
-import closeIcon from '../assets/close-icon.png';
-import NotificationItem from './NotificationItem';
-import PropTypes from 'prop-types';
-import NotificationItemShape from './NotificationItemShape';
+import React, { Component } from "react";
+import "./Notifications.css";
+import closeIcon from "../assets/close-icon.png";
+import NotificationItem from "./NotificationItem";
+import PropTypes from "prop-types";
+import NotificationItemShape from "./NotificationItemShape";
 
-class Notifications extends React.Component {
-	constructor(props) {
-		super(props);
-		this.markAsRead = this.markAsRead.bind(this);
-	}
+class Notifications extends Component {
+  constructor(props) {
+    super(props);
 
-	markAsRead(id) {
-		console.log(`Notification ${id} has been marked as read`);
-	}
+    this.markAsRead = this.markAsRead.bind(this);
+  }
 
-	render() {
-		return (
-			<React.Fragment>
-				{this.props.displayDrawer ? (
-					<div className='flex-area'>
-						<div className='menuItem'>
-							<p>Your notifications</p>
-						</div>
-						<div className='Notifications'>
-							<ul>
-								{this.props.listNotifications &&
-								this.props.listNotifications.length > 0 ? (
-									this.props.listNotifications.map(
-										({ id, html, type, value }) => (
-											<NotificationItem
-												key={id}
-												markAsRead={this.markAsRead}
-												type={type}
-												value={value}
-												html={html}
-											/>
-										)
-									)
-								) : (
-									<div className='notification-header'>
-										<NotificationItem value='No new notification for now' />
-										<button
-											aria-label='Close'
-											onClick={console.log('Close button has been clicked')}
-										>
-											<img
-												style={{ display: 'inline' }}
-												src={closeIcon}
-												alt='Close'
-											/>
-										</button>
-									</div>
-								)}
-							</ul>
-						</div>
-					</div>
-				) : (
-					<div className='menuItem'>
-						<p>Your notifications</p>
-					</div>
-				)}
-			</React.Fragment>
-		);
-	}
+  markAsRead(id) {
+    console.log(`Notification ${id} has been marked as read`);
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <div className="menuItem">
+          <p>Your notifications</p>
+        </div>
+        {this.props.displayDrawer ? (
+          <div className="Notifications">
+            <button
+              style={{
+                color: "#3a3a3a",
+                fontWeight: "bold",
+                background: "none",
+                border: "none",
+                fontSize: "15px",
+                position: "absolute",
+                right: "3px",
+                top: "3px",
+                cursor: "pointer",
+                outline: "none",
+              }}
+              aria-label="Close"
+              onClick={(e) => {
+                console.log("Close button has been clicked");
+              }}
+            >
+              <img src={closeIcon} alt="close icon" width="10px" />
+            </button>
+            {this.props.listNotifications.length != 0 ? <p>Here is the list of notifications</p> : null}
+            <ul>
+              {this.props.listNotifications.length == 0 ? <NotificationItem type="default" value="No new notification for now" /> : null}
+              {this.props.listNotifications.map((val, idx) => {
+                return <NotificationItem type={val.type} value={val.value} html={val.html} key={val.id} markAsRead={this.markAsRead} id={val.id} />;
+              })}
+            </ul>
+          </div>
+        ) : null}
+      </React.Fragment>
+    );
+  }
 }
 
 Notifications.propTypes = {
-	displayDrawer: PropTypes.bool,
-	listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
 };
 
 Notifications.defaultProps = {
-	displayDrawer: false,
-	listNotifications: [],
+  displayDrawer: false,
+  listNotifications: [],
 };
 
 export default Notifications;
